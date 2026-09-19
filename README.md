@@ -1,9 +1,8 @@
-<H1 ALIGN =CENTER>Implementation of Speech Recognition</H1>
- <H3>ENTER YOUR NAME: RAGALA SAI VIVEK </H3>
-<H3>ENTER YOUR REGISTER NO: 212223230163 </H3>
+<H3>NAME : RAGALA SAI VIVEK</H3>
+<H3>REGISTER NO. 212223230163</H3>
 <H3>EX. NO.8</H3>
-<H3>DATE: 22-05-2026</H3>
-
+<H3>DATE : 11/09/2026</H3>
+<H1 ALIGN =CENTER>Implementation of Speech Recognition</H1>
 <H3>Aim:</H3> 
  To implement the conversion of live speech to text.<BR>
 <h3>Algorithm:</h3>
@@ -23,88 +22,44 @@ Step 11: Perform speech recognition with exceptional handling:<Br>
 •	A generic exception block captures any other unexpected errors.<Br>
 <H3>Program:</H3>
 
-```py
+```python
+!pip install speechrecognition
+!apt-get install -y portaudio19-dev
+!pip install PyAudio
 
-from google.colab import output
-output.enable_custom_widget_manager()
-
-!pip install SpeechRecognition
-
-from IPython.display import Javascript, display
-from google.colab import output
-from base64 import b64decode
-from pydub import AudioSegment
 import speech_recognition as sr
 
-# JavaScript to record audio
-RECORD = """
-async function recordAudio() {
-  const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-  const recorder = new MediaRecorder(stream);
+# Create a Recognizer object
+r = sr.Recognizer()
 
-  let chunks = [];
-
-  recorder.ondataavailable = e => chunks.push(e.data);
-
-  recorder.start();
-
-  await new Promise(resolve => setTimeout(resolve, 5000));
-
-  recorder.stop();
-
-  await new Promise(resolve => recorder.onstop = resolve);
-
-  const blob = new Blob(chunks);
-
-  const reader = new FileReader();
-  reader.readAsDataURL(blob);
-
-  return await new Promise(resolve => {
-    reader.onloadend = () => resolve(reader.result);
-  });
-}
-"""
-
-display(Javascript(RECORD))
-
-# Record audio
-audio_data = output.eval_js("recordAudio()")
-
-# Decode and save webm file
-audio_bytes = b64decode(audio_data.split(',')[1])
-
-with open("recorded_audio.webm", "wb") as f:
-    f.write(audio_bytes)
-
-# Convert webm to wav
-sound = AudioSegment.from_file("recorded_audio.webm")
-sound.export("recorded_audio.wav", format="wav")
-
-# Speech recognition
-recognizer = sr.Recognizer()
-
-with sr.AudioFile("recorded_audio.wav") as source:
-    audio = recognizer.record(source)
+# Replace 'your_audio_file.wav' with the name of your uploaded audio file
+# You can also specify the full path if it's in a subfolder, e.g., 'my_folder/my_audio.wav'
+audio_file_path = 'split.wav'
 
 try:
-    text = recognizer.recognize_google(audio)
+    with sr.AudioFile(audio_file_path) as source:
+        print(f"Processing audio from {audio_file_path}...")
+        audio_data = r.record(source)  # Read the entire audio file
+        
+    text = r.recognize_google(audio_data)
     print("You said:", text)
 
+except FileNotFoundError:
+    print(f"Error: Audio file '{audio_file_path}' not found. Make sure you've uploaded it correctly.")
 except sr.UnknownValueError:
-    print("Could not understand audio")
-
+    print("Sorry, could not understand the audio.")
 except sr.RequestError as e:
-    print("Google API error:", e)
-
+    print(f"Error with the request to Google Speech Recognition service: {e}")
 except Exception as e:
-    print("Error:", e)
-    
+    print(f"An unexpected error occurred: {e}")
+
 ```
 
 <H3> Output:</H3>
 
-<img width="1083" height="64" alt="image" src="https://github.com/user-attachments/assets/9bb2126c-b5d1-45a4-bf9a-5ef84e78e96b" />
+<img width="980" height="69" alt="image" src="https://github.com/user-attachments/assets/93594e06-12ea-4225-97d3-a1f318c49e7b" />
 
 
 <H3> Result:</H3>
-Thus, the speech recognition was executed successfully.
+
+Thus, The implementation of speech recognition is executed successfully.
